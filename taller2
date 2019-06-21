@@ -1,0 +1,21 @@
+>datos.txt
+>graph.txt
+let suma=0
+let z=0
+for ((i=10**6; $i<=10**7; $((i=i + 10**6)) )); do
+        for ((j=1; $j<=10; $((j=j + 1)) )); do
+                ./heapsort.pl --size $i|awk 'NR==2' >>datos.txt
+        done
+        cat datos.txt|sort -nr -t':' -k2 >orden.txt
+        promedio_tiempo[$z]=$(cat orden.txt|cut -d ":" -f 2|awk '{ suma+=$1 } END { print suma/NR}')
+        maximo_tiempo[$z]=$(cat orden.txt|cut -d ":" -f 2|head -n 1)
+        minimo_tiempo[$z]=$(cat orden.txt|cut -d ":" -f 2|tail -n 1)
+        echo "$i ${promedio_tiempo[$z]} ${maximo_tiempo[$z]} ${minimo_tiempo[$z]}" >> graph.txt
+        >datos.txt
+        let suma=0
+        z=$((z + 1))
+done
+./graph.plt
+rm -r datos.txt
+rm -r orden.txt
+
